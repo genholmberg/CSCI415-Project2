@@ -11,7 +11,6 @@
 
 
 const int SALTLENGTH = 6;
-//const int NUMUSERS = 20;
 const string MAGIC = "$";
 
 void addUser();
@@ -24,6 +23,7 @@ string generateSaltValue();
 
 int main()
 {
+   //menu
    int answer;
    while(answer != 0)
    {
@@ -34,10 +34,10 @@ int main()
          case 0:
             break;
          case 1:
-            addUser();
+            addUser(); // add user and their password to the password file
             break;
          case 2:
-            verifyPassword();
+            verifyPassword(); // verify password of a user
             break;
          default:
             cout << "Answer is invalid, please try again\n";
@@ -47,6 +47,12 @@ int main()
    return 0;
 }
 
+/*
+* Adds a username and password (after going through MD5) to the password file.
+* Params: None.
+* Pre: None.
+* Post: None.
+*/
 void addUser()
 {
    // get user ID from user
@@ -78,10 +84,18 @@ void addUser()
    saveUser(userID, password);
 }
 
+/*
+* Verifies a user's password.
+* Params: None.
+* Pre: None.
+* Post: None.
+*/
 void verifyPassword()
 {
    string userID, password, enteredHash, pwdline;
    string userInfo[4];
+
+   // get user who wants to verify their password
    cout << "Enter the userID: ";
    cin >> userID;
    while(uniqueID(userID))
@@ -94,15 +108,19 @@ void verifyPassword()
 
    // get salt and hash value for the user to be compared to the password entered
    pwdline = getUserInfo(userID);
+   // extract salt and hash values from string above
    parseUserInfo(userInfo, pwdline);
 
+   // seperate the salt and hash values
    string salt = userInfo[2];
    string savedHash = userInfo[3];
 
+   // put the entered password trough MD5 for comparison
    enteredHash = md5(salt + password);
    cout << "salt: " << salt << endl;//testing
    cout << "entered hash: " << enteredHash << "\tsaved hash: " << savedHash << endl;//testing
 
+   // tell user if the password is the same or not
    if(savedHash.compare(enteredHash) == 0)
    {
       cout << "Password verified!\n";
@@ -114,67 +132,97 @@ void verifyPassword()
 
 }
 
+/*
+* Saves user, salt, and password in password file. Runs MD5 on password plus a salt value
+* Params: two strings, one is the user's ID and the other is the user's password.
+* Pre: None.
+* Post: None.
+*/
 void saveUser(string userID, string password)
 {
    string salt, hash;
-   salt = generateSaltValue();
-   hash = md5(salt+password);
+   salt = generateSaltValue(); // get random salt value
+   hash = md5(salt+password); // run the password plus salt value through MD5
    ofstream pwdfile;
-   pwdfile.open("pwdfile.txt", std::ios::app);
-   pwdfile << MAGIC << userID << MAGIC << salt << MAGIC << hash << endl;
+   pwdfile.open("pwdfile.txt", std::ios::app); // open password file in append mode
+   pwdfile << MAGIC << userID << MAGIC << salt << MAGIC << hash << endl; // write the user ID, salt value, and hashed password to password file with a delimiter between each. 
    pwdfile.close();
    cout << "User saved\n";
 
 }
 
+/*
+* Checks if a userID has been used by a different user before.
+* Params: string which holds a userID
+* Pre: None.
+* Post: Returns true if the user ID is not in the password file, returns false if it is in the password file.
+*/
 bool uniqueID(string userID)
 {
    ifstream pwdfile;
    string line, ID;
    int pos;
-   pwdfile.open("pwdfile.txt");
-   while(getline(pwdfile, line))
+   pwdfile.open("pwdfile.txt"); // open password file
+   while(getline(pwdfile, line)) // while there are more saved users
    {
-      pos = line.find(userID);
-      if(pos != -1){
-        return false;
+      pos = line.find(userID); // check if userID is on line, if found, it will return the position in the file
+      if(pos != -1){ // if found
+        return false; // return false
       }
    } 
-   return true;
+   return true; // userID is not in file, userID is uniqure, return true
 }
 
+/*
+* Generates a 48 bit salt value.
+* Params: None.
+* Pre: None.
+* Post: Returns a random salt value.
+*/
 string generateSaltValue()
 {
    string salt = "";
    char alphanum[] =
     "0123456789"
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    "abcdefghijklmnopqrstuvwxyz";
+    "abcdefghijklmnopqrstuvwxyz"; // all possible characters in the salt value
 
   for(int i = 0; i < SALTLENGTH; i++)
-    salt += alphanum[rand() % (sizeof(alphanum) - 1)];
+    salt += alphanum[rand() % (sizeof(alphanum) - 1)]; // pick one of the characters at random and append it to the salt value
 
   salt[SALTLENGTH] = 0;
   return salt;
 
 }
 
+/*
+* Finds user's userID, salt value, and hashed password in the password file
+* Params: users userID as a string.
+* Pre: User is in the password file, otherwise string returned is empty.
+* Post: Returns user's userID, salt value, and hashed password.
+*/
 string getUserInfo(string userID)
 {
    ifstream pwdfile;
-   string line, ID;
+   string line = "", ID;
    int pos;
    pwdfile.open("pwdfile.txt");
-   while(getline(pwdfile, line))
+   while(getline(pwdfile, line)) // get next line in file
    {
-      pos = line.find(userID);
-      if(pos != -1){
+      pos = line.find(userID); // find user in line
+      if(pos != -1){ // if found break out of loop
         break;
       }
    } 
    return line;
 }
 
+/*
+* Spilts up string line into the userID, salt value, and hashed password
+* Params: array to hold data extracted and string line which holds all the data.
+* Pre: None.
+* Post: None.
+*/
 void parseUserInfo(string userInfo[], string info){
 
   string delimiter = MAGIC;
@@ -183,9 +231,9 @@ void parseUserInfo(string userInfo[], string info){
   int last = 0, next = 0, i = 0;
 
   while((next = info.find(delimiter, last)) != -1){ // npos == -1
-      token = info.substr(last, next - last);
-      userInfo[i] = token;
-      last = next + 1;
+      token = info.substr(last, next - last); // extract data
+      userInfo[i] = token; // put data into array
+      last = next + 1; // increment last
       i++;
   }
   userInfo[i] = info.substr(last);
