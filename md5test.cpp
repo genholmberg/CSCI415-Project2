@@ -20,17 +20,17 @@ const uint4 B = 0xefcdab89;
 const uint4 C = 0x98badcfe;
 const uint4 D = 0x10325476;
 
-uint4 F(uint4 x, uint4 y, uint4 z);
-uint4 G(uint4 x, uint4 y, uint4 z);
-uint4 H(uint4 x, uint4 y, uint4 z);
-uint4 I(uint4 x, uint4 y, uint4 z);
+uint4 OR1(uint4 x, uint4 y, uint4 z);
+uint4 OR2(uint4 x, uint4 y, uint4 z);
+uint4 XOR(uint4 x, uint4 y, uint4 z);
+uint4 XOROR(uint4 x, uint4 y, uint4 z);
 
-void FF(uint4 &a, uint4 b, uint4 c, uint4 d, int k, int s, int i, uint4 x[], uint4 t[]);
-void GG(uint4 &a, uint4 b, uint4 c, uint4 d, int k, int s, int i, uint4 x[], uint4 t[]);
-void HH(uint4 &a, uint4 b, uint4 c, uint4 d, int k, int s, int i, uint4 x[], uint4 t[]);
-void II(uint4 &a, uint4 b, uint4 c, uint4 d, int k, int s, int i, uint4 x[], uint4 t[]);
+void doubleOR1(uint4 &a, uint4 b, uint4 c, uint4 d, int k, int s, int i, uint4 x[], uint4 t[]);
+void doubleOR2(uint4 &a, uint4 b, uint4 c, uint4 d, int k, int s, int i, uint4 x[], uint4 t[]);
+void doubleXOR(uint4 &a, uint4 b, uint4 c, uint4 d, int k, int s, int i, uint4 x[], uint4 t[]);
+void doubleXOROR(uint4 &a, uint4 b, uint4 c, uint4 d, int k, int s, int i, uint4 x[], uint4 t[]);
 
-string hashCode(unsigned char digest[]);
+string hash_code(unsigned char digest[]);
 void process_message(uint4 state[], uint4 T[], uint4 X[]);
 string pad_message(string message);
 void digestMessage(string binMessage, string M[], uint4 X[]);
@@ -66,7 +66,7 @@ string md5(string message){
 
 	uint_to_uchar(digest, state);
 
-  	string hashedMessage = hashCode(digest);
+  	string hashedMessage = hash_code(digest);
 
   return hashedMessage;
 
@@ -83,7 +83,7 @@ void uint_to_uchar(unsigned char digest[], uint4 state[]){
 
 }
 
-string hashCode(unsigned char digest[]){
+string hash_code(unsigned char digest[]){
 
   // output hash value
   char buffer[33];
@@ -101,76 +101,76 @@ void process_message(uint4 state[], uint4 T[], uint4 X[]){
 	uint4 a = state[0], b = state[1], c = state[2], d = state[3];
 
 	//* Round 1 *//
-	FF(a, b, c, d, 0, 7, 1, X, T);
-	FF(d, a, b, c, 1, 12, 2, X, T);
-	FF(c, d, a, b, 2, 17, 3, X, T);
-	FF(b, c, d, a, 3, 22, 4, X, T);
-	FF(a, b, c, d, 4, 7, 5, X, T);
-	FF(d, a, b, c, 5, 12, 6, X, T);
-	FF(c, d, a, b, 6, 17, 7, X, T);
-	FF(b, c, d, a, 7, 22, 8, X, T);	
-	FF(a, b, c, d, 8, 7, 9, X, T);
-	FF(d, a, b, c, 9, 12, 10, X, T);
-	FF(c, d, a, b, 10, 17, 11, X, T);
-	FF(b, c, d, a, 11, 22, 12, X, T);
-	FF(a, b, c, d, 12, 7, 13, X, T);
-	FF(d, a, b, c, 13, 12, 14, X, T);
-	FF(c, d, a, b, 14, 17, 15, X, T);
-	FF(b, c, d, a, 15, 22, 16, X, T);
+	doubleOR1(a, b, c, d, 0, 7, 1, X, T);
+	doubleOR1(d, a, b, c, 1, 12, 2, X, T);
+	doubleOR1(c, d, a, b, 2, 17, 3, X, T);
+	doubleOR1(b, c, d, a, 3, 22, 4, X, T);
+	doubleOR1(a, b, c, d, 4, 7, 5, X, T);
+	doubleOR1(d, a, b, c, 5, 12, 6, X, T);
+	doubleOR1(c, d, a, b, 6, 17, 7, X, T);
+	doubleOR1(b, c, d, a, 7, 22, 8, X, T);	
+	doubleOR1(a, b, c, d, 8, 7, 9, X, T);
+	doubleOR1(d, a, b, c, 9, 12, 10, X, T);
+	doubleOR1(c, d, a, b, 10, 17, 11, X, T);
+	doubleOR1(b, c, d, a, 11, 22, 12, X, T);
+	doubleOR1(a, b, c, d, 12, 7, 13, X, T);
+	doubleOR1(d, a, b, c, 13, 12, 14, X, T);
+	doubleOR1(c, d, a, b, 14, 17, 15, X, T);
+	doubleOR1(b, c, d, a, 15, 22, 16, X, T);
 
 	//* Round 2 */
-	GG(a, b, c, d, 1, 5, 17, X, T);
-	GG(d, a, b, c, 6, 9, 18, X, T);
-	GG(c, d, a, b, 11, 14, 19, X, T);
-	GG(b, c, d, a, 0, 20, 20, X, T);
-	GG(a, b, c, d, 5, 5, 21, X, T);
-	GG(d, a, b, c, 10, 9, 22, X, T);
-	GG(c, d, a, b, 15, 14, 23, X, T);
-	GG(b, c, d, a, 4, 20, 24, X, T);	
-	GG(a, b, c, d, 9, 5, 25, X, T);
-	GG(d, a, b, c, 14, 9, 26, X, T);
-	GG(c, d, a, b, 3, 14, 27, X, T);
-	GG(b, c, d, a, 8, 20, 28, X, T);
-	GG(a, b, c, d, 13, 5, 29, X, T);
-	GG(d, a, b, c, 2, 9, 30, X, T);
-	GG(c, d, a, b, 7, 14, 31, X, T);
-	GG(b, c, d, a, 12, 20, 32, X, T);
+	doubleOR2(a, b, c, d, 1, 5, 17, X, T);
+	doubleOR2(d, a, b, c, 6, 9, 18, X, T);
+	doubleOR2(c, d, a, b, 11, 14, 19, X, T);
+	doubleOR2(b, c, d, a, 0, 20, 20, X, T);
+	doubleOR2(a, b, c, d, 5, 5, 21, X, T);
+	doubleOR2(d, a, b, c, 10, 9, 22, X, T);
+	doubleOR2(c, d, a, b, 15, 14, 23, X, T);
+	doubleOR2(b, c, d, a, 4, 20, 24, X, T);	
+	doubleOR2(a, b, c, d, 9, 5, 25, X, T);
+	doubleOR2(d, a, b, c, 14, 9, 26, X, T);
+	doubleOR2(c, d, a, b, 3, 14, 27, X, T);
+	doubleOR2(b, c, d, a, 8, 20, 28, X, T);
+	doubleOR2(a, b, c, d, 13, 5, 29, X, T);
+	doubleOR2(d, a, b, c, 2, 9, 30, X, T);
+	doubleOR2(c, d, a, b, 7, 14, 31, X, T);
+	doubleOR2(b, c, d, a, 12, 20, 32, X, T);
 
 	//* Round 3 */
-	HH(a, b, c, d, 5, 4, 33, X, T);
-	HH(d, a, b, c, 8, 11, 34, X, T);
-	HH(c, d, a, b, 11, 16, 35, X, T);
-	HH(b, c, d, a, 14, 23, 36, X, T);
-	HH(a, b, c, d, 1, 4, 37, X, T);
-	HH(d, a, b, c, 4, 11, 38, X, T);
-	HH(c, d, a, b, 7, 16, 39, X, T);
-	HH(b, c, d, a, 10, 23, 40, X, T);	
-	HH(a, b, c, d, 13, 4, 41, X, T);
-	HH(d, a, b, c, 0, 11, 42, X, T);
-	HH(c, d, a, b, 3, 16, 43, X, T);
-	HH(b, c, d, a, 6, 23, 44, X, T);
-	HH(a, b, c, d, 9, 4, 45, X, T);
-	HH(d, a, b, c, 12, 11, 46, X, T);
-	HH(c, d, a, b, 15, 16, 47, X, T);
-	HH(b, c, d, a, 2, 23, 48, X, T);
+	doubleXOR(a, b, c, d, 5, 4, 33, X, T);
+	doubleXOR(d, a, b, c, 8, 11, 34, X, T);
+	doubleXOR(c, d, a, b, 11, 16, 35, X, T);
+	doubleXOR(b, c, d, a, 14, 23, 36, X, T);
+	doubleXOR(a, b, c, d, 1, 4, 37, X, T);
+	doubleXOR(d, a, b, c, 4, 11, 38, X, T);
+	doubleXOR(c, d, a, b, 7, 16, 39, X, T);
+	doubleXOR(b, c, d, a, 10, 23, 40, X, T);	
+	doubleXOR(a, b, c, d, 13, 4, 41, X, T);
+	doubleXOR(d, a, b, c, 0, 11, 42, X, T);
+	doubleXOR(c, d, a, b, 3, 16, 43, X, T);
+	doubleXOR(b, c, d, a, 6, 23, 44, X, T);
+	doubleXOR(a, b, c, d, 9, 4, 45, X, T);
+	doubleXOR(d, a, b, c, 12, 11, 46, X, T);
+	doubleXOR(c, d, a, b, 15, 16, 47, X, T);
+	doubleXOR(b, c, d, a, 2, 23, 48, X, T);
 
 	//* Round 4 */
-	II(a, b, c, d, 0, 6, 49, X, T);
-	II(d, a, b, c, 7, 10, 50, X, T);
-	II(c, d, a, b, 14, 15, 51, X, T);
-	II(b, c, d, a, 5, 21, 52, X, T);
-	II(a, b, c, d, 12, 6, 53, X, T);
-	II(d, a, b, c, 3, 10, 54, X, T);
-	II(c, d, a, b, 10, 15, 55, X, T);
-	II(b, c, d, a, 1, 21, 56, X, T);	
-	II(a, b, c, d, 8, 6, 57, X, T);
-	II(d, a, b, c, 15, 10, 58, X, T);
-	II(c, d, a, b, 6, 15, 59, X, T);
-	II(b, c, d, a, 13, 21, 60, X, T);
-	II(a, b, c, d, 4, 6, 61, X, T);
-	II(d, a, b, c, 11, 10, 62, X, T);
-	II(c, d, a, b, 2, 15, 63, X, T);
-	II(b, c, d, a, 9, 21, 64, X, T);
+	doubleXOROR(a, b, c, d, 0, 6, 49, X, T);
+	doubleXOROR(d, a, b, c, 7, 10, 50, X, T);
+	doubleXOROR(c, d, a, b, 14, 15, 51, X, T);
+	doubleXOROR(b, c, d, a, 5, 21, 52, X, T);
+	doubleXOROR(a, b, c, d, 12, 6, 53, X, T);
+	doubleXOROR(d, a, b, c, 3, 10, 54, X, T);
+	doubleXOROR(c, d, a, b, 10, 15, 55, X, T);
+	doubleXOROR(b, c, d, a, 1, 21, 56, X, T);	
+	doubleXOROR(a, b, c, d, 8, 6, 57, X, T);
+	doubleXOROR(d, a, b, c, 15, 10, 58, X, T);
+	doubleXOROR(c, d, a, b, 6, 15, 59, X, T);
+	doubleXOROR(b, c, d, a, 13, 21, 60, X, T);
+	doubleXOROR(a, b, c, d, 4, 6, 61, X, T);
+	doubleXOROR(d, a, b, c, 11, 10, 62, X, T);
+	doubleXOROR(c, d, a, b, 2, 15, 63, X, T);
+	doubleXOROR(b, c, d, a, 9, 21, 64, X, T);
 
 	state[0] += a;
 	state[1] += b;
@@ -232,7 +232,6 @@ void digestMessage(string binMessage, string M[], uint4 X[]){
 
 void init_array(uint4 T[]){
 
-	// T[i] = abs(sin(i+1) * 2^32)
 	// Generate 64 elements of T for transform
 	for(int i = 0; i < 64; i++){
 		int v = sin(i + 1);
@@ -241,35 +240,35 @@ void init_array(uint4 T[]){
 	}	
 }
 
-uint4 F(uint4 x, uint4 y, uint4 z){
+uint4 OR1(uint4 x, uint4 y, uint4 z){
 	return ((x & y) | (~x & z));
 }
 
 
-uint4 G(uint4 x, uint4 y, uint4 z){
+uint4 OR2(uint4 x, uint4 y, uint4 z){
 	return ((x & z) | (y & ~z));
 }
 
-uint4 H(uint4 x, uint4 y, uint4 z){
+uint4 XOR(uint4 x, uint4 y, uint4 z){
 	return ((x ^ y ^ z));
 }
 
-uint4 I(uint4 x, uint4 y, uint4 z){
+uint4 XOROR(uint4 x, uint4 y, uint4 z){
 	return (y ^ (x | ~z));
 }
 
-void FF(uint4 &a, uint4 b, uint4 c, uint4 d, int k, int s, int i, uint4 x[], uint4 t[]){
-	a = b + ((a + F(b, c, d) + x[k] + t[i]) << s);
+void doubleOR1(uint4 &a, uint4 b, uint4 c, uint4 d, int k, int s, int i, uint4 x[], uint4 t[]){
+	a = b + ((a + OR1(b, c, d) + x[k] + t[i]) << s);
 }
 
-void GG(uint4 &a, uint4 b, uint4 c, uint4 d, int k, int s, int i, uint4 x[], uint4 t[]){
-	a = b + ((a + G(b, c, d) + x[k] + t[i]) << s);
+void doubleOR2(uint4 &a, uint4 b, uint4 c, uint4 d, int k, int s, int i, uint4 x[], uint4 t[]){
+	a = b + ((a + OR2(b, c, d) + x[k] + t[i]) << s);
 }
 
-void HH(uint4 &a, uint4 b, uint4 c, uint4 d, int k, int s, int i, uint4 x[], uint4 t[]){
-	a = b + ((a + H(b, c, d) + x[k] + t[i]) << s);
+void doubleXOR(uint4 &a, uint4 b, uint4 c, uint4 d, int k, int s, int i, uint4 x[], uint4 t[]){
+	a = b + ((a + XOR(b, c, d) + x[k] + t[i]) << s);
 }
 
-void II(uint4 &a, uint4 b, uint4 c, uint4 d, int k, int s, int i, uint4 x[], uint4 t[]){
-	a = b + ((a + I(b, c, d) + x[k] + t[i]) << s);
+void doubleXOROR(uint4 &a, uint4 b, uint4 c, uint4 d, int k, int s, int i, uint4 x[], uint4 t[]){
+	a = b + ((a + XOROR(b, c, d) + x[k] + t[i]) << s);
 }
