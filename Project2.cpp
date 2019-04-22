@@ -139,8 +139,12 @@ void verifyPassword()
 void saveUser(string userID, string password)
 {
    string salt, hash;
+   clock_t timer;
    salt = generateSaltValue(); // get random salt value
+   timer = clock();
    hash = md5(salt+password); // run the password plus salt value through MD5
+   timer = clock() - timer;
+   cout << "\nMD5 took " << ((float)timer)/CLOCKS_PER_SEC << " seconds\n";
    ofstream pwdfile;
    pwdfile.open("pwdfile.txt", std::ios::app); // open password file in append mode
    pwdfile << MAGIC << userID << MAGIC << salt << MAGIC << hash << "\n"; // write the user ID, salt value, and hashed password to password file with a delimiter between each. 

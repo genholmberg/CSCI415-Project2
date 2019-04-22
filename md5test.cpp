@@ -87,13 +87,13 @@ string md5(string message){
 */
 void uint_to_uchar(unsigned char digest[], uint4 state[]){
 
+char data[256];
   for (int i = 0, j = 0; j < 16; i++, j += 4) {
     digest[j] = state[i] & 255;		// get first byte 
     digest[j+1] = (state[i] >> 8) & 255;	// get second byte
     digest[j+2] = (state[i] >> 16) & 255;	// get third byte
     digest[j+3] = (state[i] >> 24) & 255;	// get fourth byte
   }	// end for
-
 }// end uint_to_uchar
 
 /*
@@ -130,82 +130,83 @@ void process_message(uint4 state[], uint4 T[], uint4 X[]){
 	//* Round 1 *//
 	// performs operation 
 	// a = b + ((a + F(b, c, d) + x[k] + t[i]) << s)
-	FF(a, b, c, d, 0, 7, 1, X, T);
-	FF(d, a, b, c, 1, 12, 2, X, T);
-	FF(c, d, a, b, 2, 17, 3, X, T);
-	FF(b, c, d, a, 3, 22, 4, X, T);
-	FF(a, b, c, d, 4, 7, 5, X, T);
-	FF(d, a, b, c, 5, 12, 6, X, T);
-	FF(c, d, a, b, 6, 17, 7, X, T);
-	FF(b, c, d, a, 7, 22, 8, X, T);	
-	FF(a, b, c, d, 8, 7, 9, X, T);
-	FF(d, a, b, c, 9, 12, 10, X, T);
-	FF(c, d, a, b, 10, 17, 11, X, T);
-	FF(b, c, d, a, 11, 22, 12, X, T);
-	FF(a, b, c, d, 12, 7, 13, X, T);
-	FF(d, a, b, c, 13, 12, 14, X, T);
-	FF(c, d, a, b, 14, 17, 15, X, T);
-	FF(b, c, d, a, 15, 22, 16, X, T);
+	FF(a, b, c, d,  0,  7, 0, X, T);
+	FF(d, a, b, c,  1, 12, 1, X, T);
+	FF(c, d, a, b,  2, 17, 2, X, T);
+	FF(b, c, d, a,  3, 22, 3, X, T);
+	FF(a, b, c, d,  4,  7, 4, X, T);
+	FF(d, a, b, c,  5, 12, 5, X, T);
+	FF(c, d, a, b,  6, 17, 6, X, T);
+	FF(b, c, d, a,  7, 22, 7, X, T);	
+	FF(a, b, c, d,  8,  7, 8, X, T);
+	FF(d, a, b, c,  9, 12, 9, X, T);
+	FF(c, d, a, b, 10, 17, 10, X, T);
+	FF(b, c, d, a, 11, 22, 11, X, T);
+	FF(a, b, c, d, 12, 7,  12, X, T);
+	FF(d, a, b, c, 13, 12, 13, X, T);
+	FF(c, d, a, b, 14, 17, 14, X, T);
+	FF(b, c, d, a, 15, 22, 15, X, T);
 
 	//* Round 2 */
 	// performs operation
 	// a = b + ((a + G(b, c, d) + x[k] + t[i]) << s)
-	GG(a, b, c, d, 1, 5, 17, X, T);
-	GG(d, a, b, c, 6, 9, 18, X, T);
-	GG(c, d, a, b, 11, 14, 19, X, T);
-	GG(b, c, d, a, 0, 20, 20, X, T);
-	GG(a, b, c, d, 5, 5, 21, X, T);
-	GG(d, a, b, c, 10, 9, 22, X, T);
-	GG(c, d, a, b, 15, 14, 23, X, T);
-	GG(b, c, d, a, 4, 20, 24, X, T);	
-	GG(a, b, c, d, 9, 5, 25, X, T);
-	GG(d, a, b, c, 14, 9, 26, X, T);
-	GG(c, d, a, b, 3, 14, 27, X, T);
-	GG(b, c, d, a, 8, 20, 28, X, T);
-	GG(a, b, c, d, 13, 5, 29, X, T);
-	GG(d, a, b, c, 2, 9, 30, X, T);
-	GG(c, d, a, b, 7, 14, 31, X, T);
-	GG(b, c, d, a, 12, 20, 32, X, T);
+	GG(a, b, c, d, 1,  5,  16, X, T);
+	GG(d, a, b, c, 6,  9,  17, X, T);
+	GG(c, d, a, b, 11, 14, 18, X, T);
+	GG(b, c, d, a, 0,  20, 19, X, T);
+	GG(a, b, c, d, 5,  5,  20, X, T);
+	GG(d, a, b, c, 10, 9,  21, X, T);
+	GG(c, d, a, b, 15, 14, 22, X, T);
+	GG(b, c, d, a, 4,  20, 23, X, T);	
+	GG(a, b, c, d, 9,  5,  24, X, T);
+	GG(d, a, b, c, 14, 9,  25, X, T);
+	GG(c, d, a, b, 3,  14, 26, X, T);
+	GG(b, c, d, a, 8,  20, 27, X, T);
+	GG(a, b, c, d, 13, 5,  28, X, T);
+	GG(d, a, b, c, 2,  9,  29, X, T);
+	GG(c, d, a, b, 7,  14, 30, X, T);
+	GG(b, c, d, a, 12, 20, 31, X, T);
 
 	//* Round 3 */
 	// performs operation
 	// a = b + ((a + H(b, c, d) + x[k] + t[i]) << s)
-	HH(a, b, c, d, 5, 4, 33, X, T);
-	HH(d, a, b, c, 8, 11, 34, X, T);
-	HH(c, d, a, b, 11, 16, 35, X, T);
-	HH(b, c, d, a, 14, 23, 36, X, T);
-	HH(a, b, c, d, 1, 4, 37, X, T);
-	HH(d, a, b, c, 4, 11, 38, X, T);
-	HH(c, d, a, b, 7, 16, 39, X, T);
-	HH(b, c, d, a, 10, 23, 40, X, T);	
-	HH(a, b, c, d, 13, 4, 41, X, T);
-	HH(d, a, b, c, 0, 11, 42, X, T);
-	HH(c, d, a, b, 3, 16, 43, X, T);
-	HH(b, c, d, a, 6, 23, 44, X, T);
-	HH(a, b, c, d, 9, 4, 45, X, T);
-	HH(d, a, b, c, 12, 11, 46, X, T);
-	HH(c, d, a, b, 15, 16, 47, X, T);
-	HH(b, c, d, a, 2, 23, 48, X, T);
+	HH(a, b, c, d, 5,  4,  32, X, T);
+	HH(d, a, b, c, 8,  11, 33, X, T);
+	HH(c, d, a, b, 11, 16, 34, X, T);
+	HH(b, c, d, a, 14, 23, 35, X, T);
+	HH(a, b, c, d, 1,  4,  36, X, T);
+	HH(d, a, b, c, 4,  11, 37, X, T);
+	HH(c, d, a, b, 7,  16, 38, X, T);
+	HH(b, c, d, a, 10, 23, 39, X, T);	
+	HH(a, b, c, d, 13, 4,  40, X, T);
+	HH(d, a, b, c, 0,  11, 41, X, T);
+	HH(c, d, a, b, 3,  16, 42, X, T);
+	HH(b, c, d, a, 6,  23, 43, X, T);
+	HH(a, b, c, d, 9,  4,  44, X, T);
+	HH(d, a, b, c, 12, 11, 45, X, T);
+	HH(c, d, a, b, 15, 16, 46, X, T);
+	HH(b, c, d, a, 2,  23, 47, X, T);
+
 
 	//* Round 4 */
 	// performs operation
 	// a = b + ((a + I(b, c, d) + x[k] + t[i]) << s)
-	II(a, b, c, d, 0, 6, 49, X, T);
-	II(d, a, b, c, 7, 10, 50, X, T);
-	II(c, d, a, b, 14, 15, 51, X, T);
-	II(b, c, d, a, 5, 21, 52, X, T);
-	II(a, b, c, d, 12, 6, 53, X, T);
-	II(d, a, b, c, 3, 10, 54, X, T);
-	II(c, d, a, b, 10, 15, 55, X, T);
-	II(b, c, d, a, 1, 21, 56, X, T);	
-	II(a, b, c, d, 8, 6, 57, X, T);
-	II(d, a, b, c, 15, 10, 58, X, T);
-	II(c, d, a, b, 6, 15, 59, X, T);
-	II(b, c, d, a, 13, 21, 60, X, T);
-	II(a, b, c, d, 4, 6, 61, X, T);
-	II(d, a, b, c, 11, 10, 62, X, T);
-	II(c, d, a, b, 2, 15, 63, X, T);
-	II(b, c, d, a, 9, 21, 64, X, T);
+	II(a, b, c, d, 0,  6,  48, X, T);
+	II(d, a, b, c, 7,  10, 49, X, T);
+	II(c, d, a, b, 14, 15, 50, X, T);
+	II(b, c, d, a, 5,  21, 51, X, T);
+	II(a, b, c, d, 12, 6,  52, X, T);
+	II(d, a, b, c, 3,  10, 53, X, T);
+	II(c, d, a, b, 10, 15, 54, X, T);
+	II(b, c, d, a, 1,  21, 55, X, T);
+	II(a, b, c, d, 8,  6,  56, X, T);
+	II(d, a, b, c, 15, 10, 57, X, T);
+	II(c, d, a, b, 6,  15, 58, X, T);
+	II(b, c, d, a, 13, 21, 59, X, T);
+	II(a, b, c, d, 4,  6,  60, X, T);
+	II(d, a, b, c, 11, 10, 61, X, T);
+	II(c, d, a, b, 2,  15, 62, X, T);
+	II(b, c, d, a, 9,  21, 63, X, T);
 
 	state[0] += a; 	// A = A + AA
 	state[1] += b;	// B = B + BB
@@ -288,7 +289,7 @@ void init_array(uint4 T[]){
 	// Generate 64 elements of T for transform
 	for(int i = 0; i < 64; i++){
 		v = sin(i + 1);
-		v  = pow(2, 32);
+		v *= pow(2, 32);
 		T[i] = abs(v);
 	}// end for	
 }// end init_array
@@ -320,7 +321,7 @@ uint4 G(uint4 x, uint4 y, uint4 z){
 * Post: This method returns one 32 bit word.
 */
 uint4 H(uint4 x, uint4 y, uint4 z){
-	return ((x ^ y ^ z));
+	return (((x ^ y) ^ z));
 }// end H
 
 /*
@@ -361,6 +362,7 @@ void GG(uint4 &a, uint4 b, uint4 c, uint4 d, int k, int s, int i, uint4 x[], uin
 */
 void HH(uint4 &a, uint4 b, uint4 c, uint4 d, int k, int s, int i, uint4 x[], uint4 t[]){
 	a = b + ((a + H(b, c, d) + x[k] + t[i]) << s);
+
 }// end HH
 
 /*
