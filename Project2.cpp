@@ -8,7 +8,7 @@
 #include <bitset>
 #include <math.h>
 #include "md5test.cpp"
-
+using namespace std;
 
 const int SALTLENGTH = 6;
 const string MAGIC = "$";
@@ -24,7 +24,7 @@ string generateSaltValue();
 int main()
 {
    //menu
-   int answer;
+   int answer = 1;
    while(answer != 0)
    {
       cout << "\n0 to exit\n1 to add a user\n2 to verify password of a user\n";
@@ -116,9 +116,7 @@ void verifyPassword()
    string savedHash = userInfo[3];
 
    // put the entered password trough MD5 for comparison
-   enteredHash = md5(salt + password);
-   cout << "salt: " << salt << endl;//testing
-   cout << "entered hash: " << enteredHash << "\tsaved hash: " << savedHash << endl;//testing
+   enteredHash = md5(salt+password);
 
    // tell user if the password is the same or not
    if(savedHash.compare(enteredHash) == 0)
@@ -145,7 +143,7 @@ void saveUser(string userID, string password)
    hash = md5(salt+password); // run the password plus salt value through MD5
    ofstream pwdfile;
    pwdfile.open("pwdfile.txt", std::ios::app); // open password file in append mode
-   pwdfile << MAGIC << userID << MAGIC << salt << MAGIC << hash << endl; // write the user ID, salt value, and hashed password to password file with a delimiter between each. 
+   pwdfile << MAGIC << userID << MAGIC << salt << MAGIC << hash << "\n"; // write the user ID, salt value, and hashed password to password file with a delimiter between each. 
    pwdfile.close();
    cout << "User saved\n";
 
