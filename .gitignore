@@ -1,0 +1,6 @@
+.vscode
+*.o
+a.out
+*.xlsx
+*.docx
+pwdfile.txt

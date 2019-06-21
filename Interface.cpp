@@ -7,7 +7,7 @@
 #include <ctime>
 #include <bitset>
 #include <math.h>
-#include "md5test.cpp"
+#include "md5.cpp"
 using namespace std;
 
 const int SALTLENGTH = 6;
